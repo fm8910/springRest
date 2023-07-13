@@ -1,6 +1,7 @@
 package com.ni.fmgarcia;
 
 import com.ni.fmgarcia.config.security.JwtUtils;
+import com.ni.fmgarcia.exception.NotFoundException;
 import com.ni.fmgarcia.model.dto.PhoneSignUpRequest;
 import com.ni.fmgarcia.model.dto.UserSignUpRequest;
 import com.ni.fmgarcia.model.entity.User;
@@ -15,7 +16,9 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.List;
+import java.util.UUID;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -47,5 +50,11 @@ public class UserServiceTest {
         verify(userRepository, times(1)).save(any(User.class));
     }
 
+    @Test
+    void deleteUserById_throwsExceptionIfIDNotFound() {
+        assertThatExceptionOfType(NotFoundException.class)
+                .isThrownBy(() -> userService.deleteUserById(UUID.randomUUID().toString()))
+                .withMessage("El usuario no existe.");
+    }
 
 }
