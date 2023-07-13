@@ -1,4 +1,4 @@
-Minimal [Spring Boot](http://projects.spring.io/spring-boot/) tiste app.
+Minimal [Spring Boot](http://projects.spring.io/spring-boot/) springTest app.
 
 ## Requirements
 
