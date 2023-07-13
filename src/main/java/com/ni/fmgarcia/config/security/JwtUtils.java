@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.time.LocalDate;
 import java.util.Date;
@@ -21,10 +22,10 @@ import java.util.Date;
 public class JwtUtils {
     private static final Logger logger = LoggerFactory.getLogger(JwtUtils.class);
 
-    @Value("${tiste.app.jwtSecret}")
+    @Value("${springTest.app.jwtSecret}")
     private String jwtSecret;
 
-    @Value("${tiste.app.jwtExpirationMs}")
+    @Value("${springTest.app.jwtExpirationMs}")
     private int jwtExpirationMs;
 
     public String parseToken(HttpServletRequest req) {
@@ -65,11 +66,12 @@ public class JwtUtils {
                 .setSubject(email)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
-                .signWith(key(),SignatureAlgorithm.HS512)
+                .signWith(key())
                 .compact();
     }
 
     private Key key() {
-        return Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
+        byte[] keyBytes = this.jwtSecret.getBytes(StandardCharsets.UTF_8);
+        return Keys.hmacShaKeyFor(keyBytes);
     }
 }
