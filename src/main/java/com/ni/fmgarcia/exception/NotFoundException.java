@@ -1,4 +1,4 @@
-package com.ni.fmgarcia.util.exceptions;
+package com.ni.fmgarcia.exception;
 
 public class NotFoundException extends RuntimeException{
 

@@ -5,7 +5,7 @@ import com.ni.fmgarcia.model.dto.UserResponse;
 import com.ni.fmgarcia.model.dto.UserSignUpRequest;
 import com.ni.fmgarcia.model.entity.User;
 import com.ni.fmgarcia.repository.UserRepository;
-import com.ni.fmgarcia.util.exceptions.NotFoundException;
+import com.ni.fmgarcia.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
