@@ -24,6 +24,7 @@ Open a browser and key in URL:
 $ open http://localhost:8080/nisum/swagger-ui/index.html
 ```
 
-
 > Note:
 > - All the APIs can be playing through the UI
+# Sequence Diagram
+![User registration](https://github.com/fm8910/springRest/assets/6208469/758fcaf7-3d38-47cf-b541-a3670382a62b)
