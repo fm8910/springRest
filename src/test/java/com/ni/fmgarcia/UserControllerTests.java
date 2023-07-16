@@ -11,6 +11,7 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -25,7 +26,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(UserController.class)
+@WebMvcTest(value = UserController.class,
+        excludeAutoConfiguration = SecurityAutoConfiguration.class)
 public class UserControllerTests {
 
 
@@ -74,7 +76,7 @@ public class UserControllerTests {
                 .header("Accept", "application/json")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json)).
-                andExpect(status().isOk()).
+                andExpect(status().isCreated()).
                 andExpect(jsonPath("$.name", Matchers.is("Juan Rodriguez"))).
                 andExpect(jsonPath("$.email", Matchers.is("juan@rodriguez.org")));
     }
