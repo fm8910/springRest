@@ -2,9 +2,11 @@ package com.ni.fmgarcia.controller;
 
 import com.ni.fmgarcia.model.dto.UserResponse;
 import com.ni.fmgarcia.model.dto.UserSignUpRequest;
+import com.ni.fmgarcia.model.dto.UserSigninRequest;
 import com.ni.fmgarcia.model.entity.User;
 import com.ni.fmgarcia.service.UserService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,19 +16,11 @@ import java.util.List;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/user")
+@RequiredArgsConstructor
+@RequestMapping("/api/v1/user")
 public class UserController {
 
-    @Autowired
-    UserService userService;
-
-    @PostMapping
-    public ResponseEntity<UserResponse> registerUser(@Valid @RequestBody UserSignUpRequest userRequest) {
-        User user = userService.saveUser(userRequest);
-        return new ResponseEntity<>(new UserResponse(user.getId(),
-                user.getName(), user.getEmail(), user.getCreated(),
-                user.getLastLogin(), user.getToken(), user.getIsActive()), HttpStatus.CREATED);
-    }
+    private final UserService userService;
 
     @GetMapping
     public ResponseEntity<?> getAllUsers() {

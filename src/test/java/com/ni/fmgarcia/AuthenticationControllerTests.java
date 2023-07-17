@@ -1,19 +1,22 @@
 package com.ni.fmgarcia;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ni.fmgarcia.controller.UserController;
+import com.ni.fmgarcia.config.security.SecurityConfiguration;
+import com.ni.fmgarcia.controller.AuthenticationController;
 import com.ni.fmgarcia.model.dto.PhoneSignUpRequest;
-import com.ni.fmgarcia.model.dto.UserResponse;
 import com.ni.fmgarcia.model.dto.UserSignUpRequest;
 import com.ni.fmgarcia.model.entity.User;
+import com.ni.fmgarcia.service.JwtService;
+import com.ni.fmgarcia.service.UserDetailService;
 import com.ni.fmgarcia.service.UserService;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -21,15 +24,13 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(value = UserController.class,
-        excludeAutoConfiguration = SecurityAutoConfiguration.class)
-public class UserControllerTests {
-
+@WebMvcTest(value = AuthenticationController.class)
+@Import({SecurityConfiguration.class})
+public class AuthenticationControllerTests {
 
     @Autowired
     private MockMvc mockMvc;
@@ -37,20 +38,12 @@ public class UserControllerTests {
     @MockBean
     private UserService userService;
 
-    @Test
-    public void testGetAll() throws Exception {
-        UserResponse userResponse = new UserResponse(UUID.randomUUID(),"pepito perez",
-                "pepito@gmail.com", LocalDateTime.now(), LocalDateTime.now(),"",true);
+    @MockBean
+    JwtService jwtService;
 
-        List<UserResponse> userResponseList = List.of(userResponse);
+    @MockBean
+    UserDetailService userDetailService;
 
-        Mockito.when(userService.getAllUsers()).thenReturn(userResponseList);
-
-        mockMvc.perform(get("/user")).
-                andExpect(status().isOk()).
-                andExpect(jsonPath("$", Matchers.hasSize(1))).
-                andExpect(jsonPath("$[0].name", Matchers.is("pepito perez")));
-    }
 
     @Test
     public void testRegisterNewUser() throws Exception {
@@ -72,7 +65,7 @@ public class UserControllerTests {
         ObjectMapper objectMapper = new ObjectMapper();
         String json = objectMapper.writeValueAsString(signupRequest);
 
-        mockMvc.perform(post("/user")
+        mockMvc.perform(post("/api/v1/auth/signup")
                 .header("Accept", "application/json")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json)).

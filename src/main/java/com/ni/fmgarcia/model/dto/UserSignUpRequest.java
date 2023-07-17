@@ -1,6 +1,5 @@
 package com.ni.fmgarcia.model.dto;
 
-import com.ni.fmgarcia.util.validation.UniqueEmail;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -21,7 +20,6 @@ public class UserSignUpRequest {
     @NotBlank(message = "Favor ingresar el correo")
     @Size(max = 50)
     @Email(message = "Favor ingresar un correo valido")
-    @UniqueEmail
     private String email;
 
     @NotBlank(message = "Favor ingresar una contraseña")
