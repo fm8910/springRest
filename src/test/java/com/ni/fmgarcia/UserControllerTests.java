@@ -2,16 +2,15 @@ package com.ni.fmgarcia;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ni.fmgarcia.config.security.SecurityConfiguration;
-import com.ni.fmgarcia.controller.AuthenticationController;
+import com.ni.fmgarcia.controller.UserController;
 import com.ni.fmgarcia.model.dto.PhoneSignUpRequest;
+import com.ni.fmgarcia.model.dto.UserResponse;
 import com.ni.fmgarcia.model.dto.UserSignUpRequest;
-import com.ni.fmgarcia.model.entity.User;
 import com.ni.fmgarcia.service.JwtService;
 import com.ni.fmgarcia.service.UserDetailService;
-import com.ni.fmgarcia.service.UserService;
+import com.ni.fmgarcia.service.UserServiceImpl;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -28,15 +27,15 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(value = AuthenticationController.class)
+@WebMvcTest(value = UserController.class)
 @Import({SecurityConfiguration.class})
-public class AuthenticationControllerTests {
+public class UserControllerTests {
 
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
-    private UserService userService;
+    private UserServiceImpl userService;
 
     @MockBean
     JwtService jwtService;
@@ -44,28 +43,28 @@ public class AuthenticationControllerTests {
     @MockBean
     UserDetailService userDetailService;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
 
     @Test
     public void testRegisterNewUser() throws Exception {
-        User user = new User();
-        user.setId(UUID.randomUUID());
-        user.setName("Juan Rodriguez");
-        user.setEmail("juan@rodriguez.org");
-        user.setCreated(LocalDateTime.now());
-        user.setLastLogin(LocalDateTime.now());
-        user.setPassword("");
-        user.setToken("");
-        user.setIsActive(true);
-
+        UserResponse user = UserResponse.builder().
+                id(UUID.randomUUID()).
+                name("Juan Rodriguez").
+                email("juan@rodriguez.org").
+                created(LocalDateTime.now()).
+                lastLogin(LocalDateTime.now()).
+                token("").
+                isActive(true).build();
         Mockito.when(userService.saveUser(Mockito.any(UserSignUpRequest.class))).thenReturn(user);
         PhoneSignUpRequest phoneDTO = new PhoneSignUpRequest("1234567","1","57");
         UserSignUpRequest signupRequest = new UserSignUpRequest("Juan Rodriguez","juan@rodriguez.org",
                 "Hunter2!",List.of(phoneDTO));
 
-        ObjectMapper objectMapper = new ObjectMapper();
         String json = objectMapper.writeValueAsString(signupRequest);
 
-        mockMvc.perform(post("/api/v1/auth/signup")
+        mockMvc.perform(post("/api/v1/users/signup")
                 .header("Accept", "application/json")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json)).

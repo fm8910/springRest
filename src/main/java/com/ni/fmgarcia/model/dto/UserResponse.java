@@ -1,11 +1,16 @@
 package com.ni.fmgarcia.model.dto;
 
+import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-@Data
+@Getter
+@Setter
+@Builder
 public class UserResponse {
 
     private UUID id;
@@ -16,15 +21,4 @@ public class UserResponse {
     private String token;
     private Boolean isActive;
 
-
-    public UserResponse(UUID id, String name, String email, LocalDateTime created,
-                        LocalDateTime lastLogin, String token, Boolean isActive) {
-        this.id = id;
-        this.name = name;
-        this.email = email;
-        this.created = created;
-        this.lastLogin = lastLogin;
-        this.token = token;
-        this.isActive = isActive;
-    }
 }
