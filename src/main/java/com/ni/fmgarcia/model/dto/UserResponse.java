@@ -1,7 +1,6 @@
 package com.ni.fmgarcia.model.dto;
 
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 

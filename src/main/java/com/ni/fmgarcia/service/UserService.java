@@ -6,12 +6,13 @@ import com.ni.fmgarcia.model.dto.UserSigninRequest;
 import com.ni.fmgarcia.model.entity.User;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserService {
 
     UserResponse saveUser(UserSignUpRequest userRequest);
 
-    String signin(UserSigninRequest request);
+    String signin(String email, String password);
 
     UserResponse createOrReplaceUser(String id, UserSignUpRequest userRequest);
 

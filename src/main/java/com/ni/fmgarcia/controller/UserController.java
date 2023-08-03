@@ -44,7 +44,7 @@ public class UserController {
     @PostMapping("/signin")
     @ResponseStatus(code = HttpStatus.OK)
     public String signin(@RequestBody UserSigninRequest request) {
-        return userService.signin(request);
+        return userService.signin(request.getEmail(), request.getPassword());
     }
 
     @Operation(summary = "Actualizamos o creamos un registro basado en su ID")

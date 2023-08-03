@@ -10,12 +10,14 @@ import com.ni.fmgarcia.util.mapper.UserResponseMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -42,18 +44,24 @@ public class UserServiceImpl implements UserService {
         return convert(userRepository.save(user));
     }
 
-    public String signin(UserSigninRequest request) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
-        var user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new IllegalArgumentException("Email o contrasena incorrecta."));
-        String token= jwtService.generateTokenFromUser(user.getEmail());
-        user.setToken(token);
-        user.setLastLogin(LocalDateTime.now());
-        userRepository.save(user);
+    public String signin(String email, String password) {
+        String token = null;
+        Optional<User> user = userRepository.findByEmail(email);
+        if (user.isPresent()) {
+            try {
+                authenticationManager.authenticate(
+                        new UsernamePasswordAuthenticationToken(email, password));
+                token = jwtService.generateTokenFromUser(user.get().getEmail());
+                user.get().setToken(token);
+                user.get().setLastLogin(LocalDateTime.now());
+                userRepository.save(user.get());
+            } catch (AuthenticationException e) {
+                throw new NotFoundException("Usuario o contraseña incorrectos.");
+
+            }
+        }
         return token;
     }
-
 
 
     public UserResponse createOrReplaceUser(String id, UserSignUpRequest userRequest) {
