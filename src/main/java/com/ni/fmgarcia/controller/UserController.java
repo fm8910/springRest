@@ -8,6 +8,8 @@ import com.ni.fmgarcia.service.UserServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +24,8 @@ public class UserController {
 
     private final UserServiceImpl userService;
 
-    @Operation(summary = "Obtiene todo los usuarios.")
+    @Operation(summary = "${api.user.getAll.summary}",
+            description = "${api.user.getAll.description}")
     @GetMapping
     public ResponseEntity<?> getAllUsers() {
         List<UserResponse> users = userService.getAllUsers();
@@ -30,8 +33,8 @@ public class UserController {
                 new ResponseEntity<>(users, HttpStatus.OK) : new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
     }
 
-    @Operation(summary = "Crear un Usuario" ,
-            description = "Permite crear un usuario nuevo el cual una vez creado retorna la informacion del usuario con su token generado")
+    @Operation(summary = "${api.user.registerUser.summary}",
+            description = "${api.user.registerUser.description}")
     @PostMapping("/signup")
     @ResponseStatus(code = HttpStatus.CREATED)
     public UserResponse registerUser(@Valid @RequestBody UserSignUpRequest userRequest) {
@@ -39,15 +42,16 @@ public class UserController {
     }
 
 
-    @Operation(summary = "Obtiene el token de sesion.",
-    description = "Metodo utilizado para obtener el token de sesion basado en las credenciales de un usuario valido.")
+    @Operation(summary = "${api.user.signin.summary}",
+    description = "${api.user.signin.description}")
     @PostMapping("/signin")
     @ResponseStatus(code = HttpStatus.OK)
     public String signin(@RequestBody UserSigninRequest request) {
         return userService.signin(request.getEmail(), request.getPassword());
     }
 
-    @Operation(summary = "Actualizamos o creamos un registro basado en su ID")
+    @Operation(summary = "${api.user.updateUser.summary}",
+            description = "${api.user.updateUser.description}")
     @PutMapping("/{id}")
     @ResponseStatus(code = HttpStatus.OK)
     public UserResponse updateUser(@PathVariable(value = "id") String id,
@@ -55,7 +59,8 @@ public class UserController {
        return userService.createOrReplaceUser(id,userRequest);
     }
 
-    @Operation(summary = "Eliminamos un registro basado en su ID")
+    @Operation(summary = "${api.user.deleteUser.summary}",
+            description = "${api.user.deleteUser.description}")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteUser(@PathVariable(value = "id") String id) {
