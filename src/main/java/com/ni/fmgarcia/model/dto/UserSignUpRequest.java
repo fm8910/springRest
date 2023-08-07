@@ -24,7 +24,7 @@ public class UserSignUpRequest {
 
     @NotBlank(message = "Favor ingresar una contraseña")
     @Pattern( regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>]).{8,20}$",
-            message = "Password must contain at least one digit [0-9].\n" +
+            message = "La contraseña debe contener al menos un numero [0-9].\n" +
             "   La contraseña debe contener al menos un caracter en minusculas [a-z].\n" +
             "   La contraseña debe contener al menos un caracter en mayusculas [A-Z].\n" +
             "   La contraseña debe contener al menos un caracter especial ejemplo: ! @ # & ( ).\n" +
