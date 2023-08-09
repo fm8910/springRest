@@ -1,9 +1,9 @@
 package com.ni.fmgarcia.model.dto;
 
+import com.ni.fmgarcia.util.beanValidation.CustomPattern;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,7 +23,7 @@ public class UserSignUpRequest {
     private String email;
 
     @NotBlank(message = "Favor ingresar una contraseña")
-    @Pattern( regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>]).{8,20}$",
+    @CustomPattern( regexp = "nisum.app.regex.password",
             message = "La contraseña debe contener al menos un numero [0-9].\n" +
             "   La contraseña debe contener al menos un caracter en minusculas [a-z].\n" +
             "   La contraseña debe contener al menos un caracter en mayusculas [A-Z].\n" +

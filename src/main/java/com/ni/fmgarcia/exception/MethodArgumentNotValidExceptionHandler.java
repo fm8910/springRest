@@ -7,7 +7,9 @@ import org.springframework.core.annotation.Order;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.List;
 
@@ -23,14 +26,14 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @ControllerAdvice
-public class MethodArgumentNotValidExceptionHandler {
+public class MethodArgumentNotValidExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ResponseStatus(BAD_REQUEST)
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public HandleMessageResponse methodArgumentNotValidException(MethodArgumentNotValidException ex) {
+
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
         BindingResult result = ex.getBindingResult();
         List<FieldError> fieldErrors = result.getFieldErrors();
-        return processFieldErrors(fieldErrors);
+        return new ResponseEntity<>(processFieldErrors(fieldErrors), headers, status);
     }
 
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
@@ -46,6 +49,15 @@ public class MethodArgumentNotValidExceptionHandler {
             error.setMessage(exception.getMessage());
         }
         return error;
+    }
+
+    @ExceptionHandler({ AuthenticationException.class })
+    @ResponseBody
+    public ResponseEntity<HandleMessageResponse> handleAuthenticationException(Exception ex) {
+
+        HandleMessageResponse re = new HandleMessageResponse( "Acceso no autorizado");
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(re);
     }
 
 
