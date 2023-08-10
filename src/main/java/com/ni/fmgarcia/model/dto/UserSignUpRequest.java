@@ -23,7 +23,7 @@ public class UserSignUpRequest {
     private String email;
 
     @NotBlank(message = "Favor ingresar una contraseña")
-    @CustomPattern( regexp = "nisum.app.regex.password",
+    @CustomPattern( regexp = "${nisum.app.regex.password}",
             message = "La contraseña debe contener al menos un numero [0-9].\n" +
             "   La contraseña debe contener al menos un caracter en minusculas [a-z].\n" +
             "   La contraseña debe contener al menos un caracter en mayusculas [A-Z].\n" +

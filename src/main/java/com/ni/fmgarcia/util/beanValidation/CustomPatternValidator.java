@@ -18,7 +18,7 @@ public class CustomPatternValidator implements ConstraintValidator<CustomPattern
 
     @Override
     public boolean isValid(String value, jakarta.validation.ConstraintValidatorContext context) {
-        String pattern = environment.getProperty(customRegex);
+        String pattern = environment.resolvePlaceholders(customRegex);
         return value != null && value.matches(pattern);
     }
 }
